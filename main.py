@@ -326,7 +326,26 @@ def preparar_resultados(cripto, dados_treino, y_pred_train, previsoes, mae, rmse
         chart_gap = gap_pred.copy()
         chart_gap["Tipo"] = "Preenchimento"
 
-    chart_df = pd.concat([chart_dados, chart_train, chart_gap, chart_prev], ignore_index=True)
+    # Adiciona histórico real desde o dia seguinte à data final até hoje
+    chart_historico_continuo = pd.DataFrame()
+    data_final_treino = dados_treino["Data"].iloc[-1]
+    data_inicio_continuo = data_final_treino + pd.Timedelta(days=0)
+    data_fim_continuo = datetime.date.today() - datetime.timedelta(days=0)
+
+    if data_inicio_continuo.date() <= data_fim_continuo:
+        try:
+            # Usa a mesma lógica do obter_dados_multiplos para garantir consistência
+            dados_historico_continuo = obter_dados_multiplos(cripto, [], data_inicio_continuo.date(), data_fim_continuo)
+            if not dados_historico_continuo.empty:
+                chart_historico_continuo = pd.DataFrame({
+                    "Data": dados_historico_continuo["Data"].values,
+                    "Fechamento": dados_historico_continuo["Fechamento"].values.ravel(),
+                    "Tipo": "Histórico (Continuação)",
+                })
+        except Exception as e:
+            print(f"Erro ao obter dados históricos contínuos: {e}")
+
+    chart_df = pd.concat([chart_dados, chart_train, chart_historico_continuo, chart_gap, chart_prev], ignore_index=True)
 
     return {
         "mae": mae,
@@ -681,3 +700,4 @@ else:
                             ,
                             hide_index=True
                         )
+
