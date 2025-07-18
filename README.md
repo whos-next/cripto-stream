@@ -49,6 +49,7 @@ Ou siga os passos abaixo para executar a aplicação localmente.
     ```
 2.  Navegue até o diretório do projeto e instale as dependências:
     ```bash
+    cd cripto-stream
     pip install -r requirements.txt
     ```
 
@@ -74,7 +75,7 @@ A interface será aberta no seu navegador (http://localhost:8501/). Para usar:
 As funções de obtenção de dados podem ser importadas e usadas em outros scripts Python:
 
 ```python
-from main import obter_dados_cripto, obter_dados_multiplos
+from main import obter_dados_crypto, obter_dados_multiplos
 import datetime
 
 # Definir período
@@ -82,7 +83,7 @@ inicio = datetime.date(2021, 1, 1)
 final = datetime.date(2021, 12, 31)
 
 # Obter dados apenas do Bitcoin
-df_btc = obter_dados_cripto("Bitcoin", inicio, final)
+df_btc = obter_dados_crypto("Bitcoin", inicio, final)
 print("Dados do Bitcoin:")
 print(df_btc.head())
 
